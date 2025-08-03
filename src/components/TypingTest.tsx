@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Clock, RotateCcw, Trophy, Target, Zap, TrendingUp } from "lucide-react";
+import { Clock, RotateCcw, Trophy, Target, Zap, TrendingUp, Play } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TypingTestProps {}
@@ -16,12 +16,23 @@ interface TestStats {
   timeElapsed: number;
 }
 
-const sampleTexts = [
-  "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the alphabet at least once. It is commonly used for testing typewriters and computer keyboards.",
-  "In the midst of winter, I found there was, within me, an invincible summer. And that makes me happy. For it says that no matter how hard the world pushes against me, within me, there's something stronger.",
-  "Technology is best when it brings people together. The future belongs to those who believe in the beauty of their dreams. Innovation distinguishes between a leader and a follower.",
-  "Success is not final, failure is not fatal: it is the courage to continue that counts. The only way to do great work is to love what you do. Stay hungry, stay foolish.",
-];
+const textSamples = {
+  60: [ // 1 minute texts
+    "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the alphabet at least once. It is commonly used for testing typewriters and computer keyboards. Practice makes perfect when it comes to typing speed and accuracy.",
+    "In the midst of winter, I found there was, within me, an invincible summer. And that makes me happy. For it says that no matter how hard the world pushes against me, within me, there's something stronger. The human spirit is resilient.",
+    "Technology is best when it brings people together. The future belongs to those who believe in the beauty of their dreams. Innovation distinguishes between a leader and a follower. Success comes to those who dare to begin.",
+  ],
+  180: [ // 3 minute texts
+    "The quick brown fox jumps over the lazy dog. This pangram contains every letter of the alphabet at least once. It is commonly used for testing typewriters and computer keyboards. Practice makes perfect when it comes to typing speed and accuracy. Technology has revolutionized the way we communicate and work. From the invention of the printing press to the development of the internet, each advancement has brought new opportunities and challenges. In today's digital age, typing skills have become more important than ever before. Whether you're writing emails, creating documents, or coding software, the ability to type quickly and accurately can significantly improve your productivity. The key to developing excellent typing skills lies in consistent practice and proper technique. Start by learning the correct finger placement on the keyboard and gradually increase your speed while maintaining accuracy. Remember, it's better to type slowly and correctly than to type quickly with many errors. As you continue to practice, you'll find that your muscle memory develops, allowing you to type without looking at the keyboard. This skill, known as touch typing, is essential for anyone who spends significant time working on a computer.",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts. The only way to do great work is to love what you do. Stay hungry, stay foolish. These words of wisdom have inspired countless individuals to pursue their dreams and overcome obstacles. In life, we face numerous challenges that test our resolve and determination. How we respond to these challenges often determines our path forward. Resilience is not about avoiding failure, but about learning from it and using those lessons to grow stronger. Every successful person has faced setbacks and disappointments along the way. What sets them apart is their ability to persevere and maintain their focus on their goals. The journey to success is rarely linear. It's filled with ups and downs, victories and defeats. But each experience, whether positive or negative, contributes to our growth and development. The most important thing is to never give up on your dreams, no matter how difficult the path may seem. With dedication, hard work, and persistence, anything is possible.",
+    "Innovation is the lifeblood of progress. Throughout history, human beings have demonstrated an remarkable ability to adapt, create, and solve complex problems. From the wheel to the smartphone, each innovation has built upon previous discoveries, creating a foundation for future advancements. In today's rapidly changing world, the pace of innovation has accelerated dramatically. New technologies emerge daily, transforming industries and reshaping the way we live and work. Artificial intelligence, renewable energy, biotechnology, and quantum computing are just a few examples of fields experiencing revolutionary breakthroughs. However, innovation is not limited to technology alone. It encompasses new ways of thinking, organizing, and approaching challenges in every aspect of human endeavor. Social innovations, such as new educational methods or community organizing strategies, can be just as transformative as technological breakthroughs. The key to fostering innovation lies in creating environments that encourage creativity, experimentation, and risk-taking. This requires open-minded leadership, diverse perspectives, and a willingness to learn from both successes and failures.",
+  ],
+  300: [ // 5 minute texts
+    "The art of communication has evolved dramatically throughout human history. From ancient cave paintings to modern digital messaging, humans have always sought ways to share ideas, emotions, and information with one another. Language itself is perhaps humanity's greatest innovation, allowing us to transmit complex thoughts and preserve knowledge across generations. In today's interconnected world, effective communication skills are more important than ever before. Whether in personal relationships, professional settings, or global interactions, the ability to express oneself clearly and understand others is crucial for success and harmony. Written communication, in particular, has taken on new significance in the digital age. Emails, text messages, social media posts, and online documents have become primary means of sharing information and maintaining relationships. This shift has made typing skills increasingly valuable, as our ability to communicate effectively often depends on how quickly and accurately we can input text into various digital platforms. The development of strong typing skills requires patience, practice, and proper technique. Touch typing, the ability to type without looking at the keyboard, represents the pinnacle of typing proficiency. This skill allows for faster input speeds, reduced errors, and the ability to focus on content rather than the mechanical process of typing. Learning touch typing involves understanding proper finger placement, developing muscle memory, and gradually increasing speed while maintaining accuracy. The standard QWERTY keyboard layout, while not the most efficient possible design, has become the global standard and remains the foundation for most typing instruction. Regular practice sessions, combined with proper posture and ergonomic considerations, can help anyone develop excellent typing skills over time.",
+    "The concept of education has undergone significant transformation over the centuries. Traditional classroom-based learning, while still important, is no longer the only pathway to knowledge acquisition. The rise of online learning platforms, educational technology, and alternative credentialing systems has democratized access to education and created new opportunities for lifelong learning. This shift has been accelerated by global events that have forced educational institutions to adapt quickly to remote learning environments. Students and educators alike have had to develop new skills and approaches to teaching and learning. The integration of technology into education has revealed both opportunities and challenges. On one hand, digital tools can enhance learning experiences, provide personalized instruction, and connect learners with resources and experts from around the world. On the other hand, issues such as digital divide, screen fatigue, and the need for self-directed learning skills have become more apparent. The future of education will likely involve a hybrid approach that combines the best aspects of traditional and digital learning methods. Critical thinking, creativity, and adaptability will become even more important as students prepare for careers in an rapidly changing job market. Educators must evolve their roles from information deliverers to learning facilitators, helping students develop the skills they need to navigate an increasingly complex world. The goal is not just to transfer knowledge, but to foster curiosity, creativity, and the ability to learn continuously throughout life.",
+    "Environmental sustainability has emerged as one of the defining challenges of our time. As the global population continues to grow and consumption patterns evolve, the pressure on natural resources and ecosystems has intensified. Climate change, biodiversity loss, pollution, and resource depletion are interconnected issues that require comprehensive and coordinated responses. The transition to sustainable practices affects every aspect of human activity, from energy production and transportation to agriculture and manufacturing. Renewable energy technologies such as solar, wind, and hydroelectric power are becoming increasingly cost-effective and efficient, offering viable alternatives to fossil fuels. Electric vehicles are gaining market share, supported by improving battery technology and expanding charging infrastructure. In agriculture, sustainable farming practices aim to maintain productivity while reducing environmental impact through techniques such as crop rotation, integrated pest management, and precision agriculture. The circular economy concept, which emphasizes reuse, recycling, and waste reduction, is gaining traction in various industries. This approach seeks to minimize waste and maximize resource efficiency by designing products and systems that can be continuously cycled rather than disposed of after single use. Individual actions, while important, must be complemented by systemic changes in policies, business practices, and social norms. Governments, corporations, and communities all have roles to play in creating a more sustainable future. Education and awareness are crucial for building support for necessary changes and empowering people to make informed decisions about their environmental impact.",
+  ]
+};
 
 const timeOptions = [
   { label: "1 min", value: 60 },
@@ -37,6 +48,7 @@ export const TypingTest = () => {
   const [selectedTime, setSelectedTime] = useState(60);
   const [isActive, setIsActive] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [isStarted, setIsStarted] = useState(false);
   const [stats, setStats] = useState<TestStats>({
     wpm: 0,
     accuracy: 100,
@@ -101,13 +113,15 @@ export const TypingTest = () => {
   }, [userInput, startTime, text]);
 
   const resetTest = () => {
-    const randomText = sampleTexts[Math.floor(Math.random() * sampleTexts.length)];
+    const textsForDuration = textSamples[selectedTime as keyof typeof textSamples] || textSamples[60];
+    const randomText = textsForDuration[Math.floor(Math.random() * textsForDuration.length)];
     setText(randomText);
     setUserInput("");
     setCurrentIndex(0);
     setTimeLeft(selectedTime);
     setIsActive(false);
     setIsFinished(false);
+    setIsStarted(false);
     setStartTime(null);
     setStats({
       wpm: 0,
@@ -116,23 +130,22 @@ export const TypingTest = () => {
       charactersTyped: 0,
       timeElapsed: 0,
     });
-    
-    // Focus input after reset
+  };
+
+  const startTest = () => {
+    setIsStarted(true);
+    setIsActive(true);
+    setStartTime(Date.now());
+    // Focus input after start
     setTimeout(() => {
       inputRef.current?.focus();
     }, 100);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (isFinished) return;
+    if (isFinished || !isStarted) return;
 
     const value = e.target.value;
-    
-    // Start test on first character
-    if (!isActive && !startTime) {
-      setIsActive(true);
-      setStartTime(Date.now());
-    }
 
     // Prevent typing beyond text length
     if (value.length <= text.length) {
@@ -280,12 +293,23 @@ export const TypingTest = () => {
                 value={userInput}
                 onChange={handleInputChange}
                 className="absolute inset-0 opacity-0 cursor-pointer"
-                disabled={isFinished}
-                autoFocus
+                disabled={isFinished || !isStarted}
+                autoFocus={isStarted}
               />
             </div>
             
-            <div className="flex gap-4 justify-center">
+            <div className="flex gap-4 justify-center items-center">
+              {!isStarted && !isFinished && (
+                <Button
+                  onClick={startTest}
+                  size="lg"
+                  className="flex items-center gap-2 px-8"
+                >
+                  <Play className="w-5 h-5" />
+                  Start Test
+                </Button>
+              )}
+              
               <Button
                 onClick={resetTest}
                 variant="outline"
@@ -295,9 +319,9 @@ export const TypingTest = () => {
                 Reset Test
               </Button>
               
-              {!isActive && !isFinished && userInput.length === 0 && (
+              {isStarted && !isFinished && (
                 <Badge variant="secondary" className="px-4 py-2">
-                  Click here and start typing to begin
+                  Keep typing...
                 </Badge>
               )}
             </div>
