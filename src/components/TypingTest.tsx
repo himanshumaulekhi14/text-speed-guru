@@ -242,7 +242,8 @@ export const TypingTest = ({}: TypingTestProps) => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     
-    if (!isActive && value.length === 1) {
+    // Auto-start test when user begins typing
+    if (!isActive && !isCompleted && value.length === 1) {
       setIsActive(true);
     }
     
@@ -257,20 +258,13 @@ export const TypingTest = ({}: TypingTestProps) => {
     }
   };
   
-  const startTest = () => {
+  const generateNewText = () => {
     if (gameMode) {
       const game = TYPING_GAMES[gameMode as keyof typeof TYPING_GAMES];
       setTestText(game.generateContent(difficulty));
     } else {
       setTestText(generateDynamicParagraph(difficulty, selectedTime));
     }
-    
-    setUserInput('');
-    setCurrentIndex(0);
-    setIsActive(true);
-    setIsCompleted(false);
-    setTimeLeft(selectedTime);
-    inputRef.current?.focus();
   };
   
   const resetTest = () => {
@@ -404,10 +398,6 @@ export const TypingTest = ({}: TypingTestProps) => {
             
             {/* Actions */}
             <div className="flex gap-2">
-              <Button onClick={startTest} disabled={isActive} className="flex items-center gap-2">
-                <Play className="h-4 w-4" />
-                {isCompleted ? 'Try Again' : 'Start Test'}
-              </Button>
               <Button variant="outline" onClick={resetTest} className="flex items-center gap-2">
                 <RotateCcw className="h-4 w-4" />
                 Reset
@@ -495,15 +485,15 @@ export const TypingTest = ({}: TypingTestProps) => {
               value={userInput}
               onChange={handleInputChange}
               className="w-full p-3 text-lg font-mono bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
-              placeholder={isActive ? "Keep typing..." : "Click 'Start Test' to begin"}
-              disabled={!isActive || isCompleted}
+              placeholder={isCompleted ? "Test completed! Click Reset to try again" : "Start typing to begin the test..."}
+              disabled={isCompleted}
               autoComplete="off"
               spellCheck="false"
             />
             
             {!isActive && !isCompleted && (
               <Badge variant="secondary" className="w-fit">
-                Press "Start Test" to begin
+                Start typing to begin the test
               </Badge>
             )}
             
